@@ -1,3 +1,103 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* GLOBAL */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: sans-serif;
+  background: #030712;
+}
+
+/* LIVE BACKGROUND ANIMATION */
+@keyframes moveBlob1 {
+
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  25% {
+    transform: translate(80px, -60px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(-40px, 40px) scale(0.9);
+  }
+
+  75% {
+    transform: translate(50px, 70px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes moveBlob2 {
+
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  25% {
+    transform: translate(-100px, 50px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(60px, -50px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(-40px, 80px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes moveBlob3 {
+
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  25% {
+    transform: translate(60px, 60px) scale(1.1);
+  }
+
+  50% {
+    transform: translate(-80px, -40px) scale(0.9);
+  }
+
+  75% {
+    transform: translate(40px, -70px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+/* ORB ANIMATIONS */
+.animate-orb1 {
+  animation: moveBlob1 18s infinite ease-in-out;
+}
+
+.animate-orb2 {
+  animation: moveBlob2 22s infinite ease-in-out;
+}
+
+.animate-orb3 {
+  animation: moveBlob3 20s infinite ease-in-out;
+}
+
+.animate-orb4 {
+  animation: moveBlob1 25s infinite ease-in-out;
+}
