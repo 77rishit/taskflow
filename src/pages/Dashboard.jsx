@@ -29,6 +29,16 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState("All")
 
+  // WORK REPORT STATES
+  const [showReportModal, setShowReportModal] =
+    useState(false)
+
+  const [selectedTaskId, setSelectedTaskId] =
+    useState(null)
+
+  const [workReport, setWorkReport] =
+    useState("")
+
   // SAVE TASKS
   useEffect(() => {
 
@@ -42,7 +52,8 @@ function Dashboard() {
   // AUTH CHECK
   useEffect(() => {
 
-    const isLoggedIn = localStorage.getItem("isLoggedIn")
+    const isLoggedIn =
+      localStorage.getItem("isLoggedIn")
 
     if (!isLoggedIn) {
       navigate("/")
@@ -61,6 +72,7 @@ function Dashboard() {
       completed: false,
       priority,
       dueDate,
+      report: "",
     }
 
     setTasks([...tasks, newTask])
@@ -78,22 +90,53 @@ function Dashboard() {
     )
   }
 
-  // TOGGLE COMPLETE
-  const toggleTask = (id) => {
+  // OPEN REPORT MODAL
+  const openReportModal = (id) => {
+
+    setSelectedTaskId(id)
+
+    setShowReportModal(true)
+  }
+
+  // COMPLETE TASK WITH REPORT
+  const completeTaskWithReport = () => {
+
+    setTasks(
+      tasks.map((task) =>
+        task.id === selectedTaskId
+          ? {
+              ...task,
+              completed: true,
+              report: workReport,
+            }
+          : task
+      )
+    )
+
+    setShowReportModal(false)
+
+    setSelectedTaskId(null)
+
+    setWorkReport("")
+  }
+
+  // UNDO TASK
+  const undoTask = (id) => {
 
     setTasks(
       tasks.map((task) =>
         task.id === id
           ? {
               ...task,
-              completed: !task.completed,
+              completed: false,
+              report: "",
             }
           : task
       )
     )
   }
 
-  // START EDIT
+  // EDIT
   const startEdit = (task) => {
 
     setEditTaskId(task.id)
@@ -151,17 +194,13 @@ function Dashboard() {
       {/* LIVE BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden">
 
-        {/* ORB 1 */}
-        <div className="absolute -top-40 -left-40 w-[700px] h-[700px] bg-blue-500/30 rounded-full blur-[160px] animate-pulse"></div>
+        <div className="absolute -top-40 -left-40 w-[700px] h-[700px] bg-blue-500/30 rounded-full blur-[160px] animate-orb1"></div>
 
-        {/* ORB 2 */}
-        <div className="absolute top-[20%] right-[-200px] w-[700px] h-[700px] bg-purple-500/30 rounded-full blur-[170px] animate-pulse"></div>
+        <div className="absolute top-[20%] right-[-200px] w-[700px] h-[700px] bg-purple-500/30 rounded-full blur-[170px] animate-orb2"></div>
 
-        {/* ORB 3 */}
-        <div className="absolute bottom-[-250px] left-[25%] w-[800px] h-[800px] bg-pink-500/20 rounded-full blur-[180px] animate-pulse"></div>
+        <div className="absolute bottom-[-250px] left-[25%] w-[800px] h-[800px] bg-pink-500/20 rounded-full blur-[180px] animate-orb3"></div>
 
-        {/* ORB 4 */}
-        <div className="absolute top-[45%] left-[50%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[150px] animate-bounce"></div>
+        <div className="absolute top-[45%] left-[50%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[150px] animate-orb4"></div>
 
         {/* GRID */}
         <div
@@ -173,12 +212,66 @@ function Dashboard() {
           }}
         ></div>
 
-        {/* DARK OVERLAY */}
         <div className="absolute inset-0 bg-black/40"></div>
 
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* REPORT MODAL */}
+      {showReportModal && (
+
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] px-6">
+
+          <div className="w-full max-w-xl bg-[#111827] border border-white/10 rounded-[35px] p-8 shadow-2xl">
+
+            <h2 className="text-4xl font-black mb-6 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+              Work Completion Report
+            </h2>
+
+            <p className="text-gray-400 mb-6">
+              Describe the work completed for this task.
+            </p>
+
+            <textarea
+              rows="6"
+              value={workReport}
+              onChange={(e) =>
+                setWorkReport(e.target.value)
+              }
+              placeholder="Write completed work details..."
+              className="w-full bg-black/30 border border-white/10 rounded-2xl p-5 outline-none resize-none"
+            ></textarea>
+
+            <div className="flex gap-4 mt-6">
+
+              <button
+                onClick={completeTaskWithReport}
+                className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 py-4 rounded-2xl font-bold hover:scale-105 transition"
+              >
+                Submit Report ✅
+              </button>
+
+              <button
+                onClick={() => {
+
+                  setShowReportModal(false)
+
+                  setWorkReport("")
+
+                }}
+                className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 py-4 rounded-2xl font-bold hover:scale-105 transition"
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* CONTENT */}
       <div className="relative z-10">
 
         {/* NAVBAR */}
@@ -211,7 +304,7 @@ function Dashboard() {
 
         </nav>
 
-        {/* CONTAINER */}
+        {/* MAIN */}
         <div className="max-w-7xl mx-auto px-6 py-10">
 
           {/* HERO */}
@@ -237,7 +330,7 @@ function Dashboard() {
           {/* STATS */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
 
-            <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
+            <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[35px]">
 
               <p className="text-gray-400">
                 Total Tasks
@@ -249,7 +342,7 @@ function Dashboard() {
 
             </div>
 
-            <div className="bg-green-500/10 border border-green-500/20 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
+            <div className="bg-green-500/10 border border-green-500/20 backdrop-blur-xl p-8 rounded-[35px]">
 
               <p className="text-green-300">
                 Completed
@@ -261,7 +354,7 @@ function Dashboard() {
 
             </div>
 
-            <div className="bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
+            <div className="bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl p-8 rounded-[35px]">
 
               <p className="text-purple-300">
                 Progress
@@ -275,7 +368,7 @@ function Dashboard() {
 
           </div>
 
-          {/* PROGRESS BAR */}
+          {/* PROGRESS */}
           <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[35px] mb-12">
 
             <div className="flex justify-between mb-4">
@@ -314,24 +407,39 @@ function Dashboard() {
                 type="text"
                 placeholder="Enter task..."
                 value={taskInput}
-                onChange={(e) => setTaskInput(e.target.value)}
+                onChange={(e) =>
+                  setTaskInput(e.target.value)
+                }
                 className="lg:col-span-2 bg-black/30 border border-white/10 p-5 rounded-2xl outline-none focus:border-blue-500"
               />
 
               <select
                 value={priority}
-                onChange={(e) => setPriority(e.target.value)}
+                onChange={(e) =>
+                  setPriority(e.target.value)
+                }
                 className="bg-black/30 border border-white/10 p-5 rounded-2xl"
               >
-                <option className="text-black">Low</option>
-                <option className="text-black">Medium</option>
-                <option className="text-black">High</option>
+                <option className="text-black">
+                  Low
+                </option>
+
+                <option className="text-black">
+                  Medium
+                </option>
+
+                <option className="text-black">
+                  High
+                </option>
+
               </select>
 
               <input
                 type="date"
                 value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+                onChange={(e) =>
+                  setDueDate(e.target.value)
+                }
                 className="bg-black/30 border border-white/10 p-5 rounded-2xl"
               />
 
@@ -339,7 +447,7 @@ function Dashboard() {
 
             <button
               onClick={addTask}
-              className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-500 py-5 rounded-2xl text-xl font-bold hover:scale-[1.02] transition duration-300 shadow-xl shadow-blue-500/20"
+              className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-500 py-5 rounded-2xl text-xl font-bold hover:scale-[1.02] transition"
             >
               Add Task 🚀
             </button>
@@ -355,18 +463,31 @@ function Dashboard() {
                 type="text"
                 placeholder="Search tasks..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) =>
+                  setSearchTerm(e.target.value)
+                }
                 className="flex-1 bg-black/30 border border-white/10 p-5 rounded-2xl outline-none"
               />
 
               <select
                 value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={(e) =>
+                  setFilter(e.target.value)
+                }
                 className="bg-black/30 border border-white/10 p-5 rounded-2xl"
               >
-                <option className="text-black">All</option>
-                <option className="text-black">Completed</option>
-                <option className="text-black">Pending</option>
+                <option className="text-black">
+                  All
+                </option>
+
+                <option className="text-black">
+                  Completed
+                </option>
+
+                <option className="text-black">
+                  Pending
+                </option>
+
               </select>
 
             </div>
@@ -382,10 +503,6 @@ function Dashboard() {
                 No Tasks Found 😴
               </h3>
 
-              <p className="text-gray-500 mt-4 text-lg">
-                Add tasks and begin your productivity journey.
-              </p>
-
             </div>
 
           )}
@@ -400,7 +517,7 @@ function Dashboard() {
                 className="group relative overflow-hidden bg-white/5 border border-white/10 backdrop-blur-2xl p-8 rounded-[35px] hover:-translate-y-3 hover:border-blue-500/40 transition-all duration-500 shadow-2xl"
               >
 
-                {/* HOVER GLOW */}
+                {/* GLOW */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
 
                 {/* TOP */}
@@ -409,12 +526,12 @@ function Dashboard() {
                   <div
                     className={`w-4 h-4 rounded-full ${
                       task.completed
-                        ? "bg-green-500 shadow-lg shadow-green-500/50"
-                        : "bg-yellow-400 shadow-lg shadow-yellow-400/50"
+                        ? "bg-green-500"
+                        : "bg-yellow-400"
                     }`}
                   ></div>
 
-                  <span className="text-gray-500 text-sm font-medium">
+                  <span className="text-gray-500 text-sm">
                     #{task.id}
                   </span>
 
@@ -428,14 +545,16 @@ function Dashboard() {
                     <input
                       type="text"
                       value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
+                      onChange={(e) =>
+                        setEditText(e.target.value)
+                      }
                       className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl text-2xl font-bold outline-none"
                     />
 
                   ) : (
 
                     <h3
-                      className={`text-4xl font-black leading-tight transition ${
+                      className={`text-4xl font-black leading-tight ${
                         task.completed
                           ? "line-through text-gray-500"
                           : "text-white"
@@ -448,38 +567,52 @@ function Dashboard() {
 
                 </div>
 
-                {/* DETAILS */}
-                <div className="mt-8 flex flex-col gap-5 relative z-10">
+                {/* PRIORITY */}
+                <div className="mt-8">
 
-                  <div>
-
-                    <span
-                      className={`px-5 py-3 rounded-full text-sm font-bold tracking-wide ${
-                        task.priority === "High"
-                          ? "bg-red-500/20 text-red-300 border border-red-500/30"
-                          : task.priority === "Medium"
-                          ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                          : "bg-green-500/20 text-green-300 border border-green-500/30"
-                      }`}
-                    >
-                      ⚡ {task.priority} Priority
-                    </span>
-
-                  </div>
-
-                  <div className="flex items-center gap-3 text-gray-400 text-lg">
-
-                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
-                      📅
-                    </div>
-
-                    <span>
-                      {task.dueDate || "No due date"}
-                    </span>
-
-                  </div>
+                  <span
+                    className={`px-5 py-3 rounded-full text-sm font-bold ${
+                      task.priority === "High"
+                        ? "bg-red-500/20 text-red-300"
+                        : task.priority === "Medium"
+                        ? "bg-yellow-500/20 text-yellow-300"
+                        : "bg-green-500/20 text-green-300"
+                    }`}
+                  >
+                    ⚡ {task.priority} Priority
+                  </span>
 
                 </div>
+
+                {/* DATE */}
+                <div className="flex items-center gap-3 text-gray-400 text-lg mt-6">
+
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+                    📅
+                  </div>
+
+                  <span>
+                    {task.dueDate || "No due date"}
+                  </span>
+
+                </div>
+
+                {/* REPORT */}
+                {task.report && (
+
+                  <div className="mt-6 bg-black/30 border border-white/10 rounded-2xl p-5 relative z-10">
+
+                    <h4 className="text-lg font-bold text-blue-400 mb-3">
+                      Work Report
+                    </h4>
+
+                    <p className="text-gray-300 leading-relaxed">
+                      {task.report}
+                    </p>
+
+                  </div>
+
+                )}
 
                 {/* BUTTONS */}
                 <div className="flex flex-wrap gap-4 mt-10 relative z-10">
@@ -487,8 +620,10 @@ function Dashboard() {
                   {editTaskId === task.id ? (
 
                     <button
-                      onClick={() => saveEdit(task.id)}
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl shadow-blue-500/20"
+                      onClick={() =>
+                        saveEdit(task.id)
+                      }
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 py-4 rounded-2xl font-bold"
                     >
                       Save
                     </button>
@@ -496,28 +631,46 @@ function Dashboard() {
                   ) : (
 
                     <button
-                      onClick={() => startEdit(task)}
-                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl shadow-purple-500/20"
+                      onClick={() =>
+                        startEdit(task)
+                      }
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 py-4 rounded-2xl font-bold"
                     >
                       Edit
                     </button>
 
                   )}
 
-                  <button
-                    onClick={() => toggleTask(task.id)}
-                    className={`flex-1 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl ${
-                      task.completed
-                        ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-black shadow-yellow-500/20"
-                        : "bg-gradient-to-r from-green-500 to-emerald-500 shadow-green-500/20"
-                    }`}
-                  >
-                    {task.completed ? "Undo" : "Complete"}
-                  </button>
+                  {/* COMPLETE */}
+                  {task.completed ? (
+
+                    <button
+                      onClick={() =>
+                        undoTask(task.id)
+                      }
+                      className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-black py-4 rounded-2xl font-bold"
+                    >
+                      Undo
+                    </button>
+
+                  ) : (
+
+                    <button
+                      onClick={() =>
+                        openReportModal(task.id)
+                      }
+                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 py-4 rounded-2xl font-bold"
+                    >
+                      Complete
+                    </button>
+
+                  )}
 
                   <button
-                    onClick={() => deleteTask(task.id)}
-                    className="w-full bg-gradient-to-r from-red-500 to-pink-500 py-4 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-xl shadow-red-500/20"
+                    onClick={() =>
+                      deleteTask(task.id)
+                    }
+                    className="w-full bg-gradient-to-r from-red-500 to-pink-500 py-4 rounded-2xl font-bold"
                   >
                     Delete
                   </button>
