@@ -41,7 +41,7 @@ function Login() {
   return (
     <div className="min-h-screen bg-[#050816] text-white flex items-center justify-center overflow-hidden relative px-6">
 
-      {/* BACKGROUND GLOW */}
+      {/* GLOW */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[150px]"></div>
 
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[150px]"></div>
@@ -63,7 +63,7 @@ function Login() {
             </h1>
 
             <p className="text-gray-400 mt-4 text-lg">
-              Your productivity partner for modern work 🚀
+              Welcome back to your productivity hub 🚀
             </p>
 
           </div>
@@ -95,6 +95,18 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-black/30 border border-white/10 p-5 rounded-2xl outline-none focus:border-purple-500 transition placeholder:text-gray-500"
             />
+
+            {/* FORGOT PASSWORD */}
+            <div className="flex justify-end">
+
+              <button
+                onClick={() => navigate("/forgot-password")}
+                className="text-blue-400 hover:text-purple-400 transition font-semibold"
+              >
+                Forgot Password?
+              </button>
+
+            </div>
 
             <button
               onClick={handleLogin}
