@@ -148,10 +148,28 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
 
-      {/* GLOW EFFECTS */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[150px]"></div>
+      {/* LIVE ANIMATED BACKGROUND */}
+      <div className="absolute inset-0 overflow-hidden">
 
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[150px]"></div>
+        {/* ORB 1 */}
+        <div className="absolute top-[-150px] left-[-100px] w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[140px] animate-pulse"></div>
+
+        {/* ORB 2 */}
+        <div className="absolute bottom-[-200px] right-[-100px] w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[160px] animate-pulse"></div>
+
+        {/* ORB 3 */}
+        <div className="absolute top-[30%] left-[40%] w-[350px] h-[350px] bg-pink-500/10 rounded-full blur-[120px] animate-bounce"></div>
+
+        {/* GRID */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        ></div>
+
+      </div>
 
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/5 border-b border-white/10 px-8 py-5 flex justify-between items-center">
@@ -486,7 +504,7 @@ function Dashboard() {
                     task.completed
                       ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-black shadow-yellow-500/20"
                       : "bg-gradient-to-r from-green-500 to-emerald-500 shadow-green-500/20"
-                  }`}
+                    }`}
                 >
                   {task.completed ? "Undo" : "Complete"}
                 </button>
