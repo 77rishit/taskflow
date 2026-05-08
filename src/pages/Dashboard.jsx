@@ -29,6 +29,7 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState("All")
 
+  // SAVE TASKS
   useEffect(() => {
 
     localStorage.setItem(
@@ -38,6 +39,7 @@ function Dashboard() {
 
   }, [tasks])
 
+  // AUTH CHECK
   useEffect(() => {
 
     const isLoggedIn = localStorage.getItem("isLoggedIn")
@@ -48,6 +50,7 @@ function Dashboard() {
 
   }, [])
 
+  // ADD TASK
   const addTask = () => {
 
     if (taskInput.trim() === "") return
@@ -67,6 +70,7 @@ function Dashboard() {
     setDueDate("")
   }
 
+  // DELETE
   const deleteTask = (id) => {
 
     setTasks(
@@ -74,6 +78,7 @@ function Dashboard() {
     )
   }
 
+  // COMPLETE
   const toggleTask = (id) => {
 
     setTasks(
@@ -88,6 +93,7 @@ function Dashboard() {
     )
   }
 
+  // EDIT
   const startEdit = (task) => {
 
     setEditTaskId(task.id)
@@ -95,6 +101,7 @@ function Dashboard() {
     setEditText(task.title)
   }
 
+  // SAVE EDIT
   const saveEdit = (id) => {
 
     setTasks(
@@ -110,6 +117,7 @@ function Dashboard() {
     setEditText("")
   }
 
+  // FILTER TASKS
   const filteredTasks = tasks.filter((task) => {
 
     const matchesSearch =
@@ -128,6 +136,7 @@ function Dashboard() {
     return matchesSearch
   })
 
+  // STATS
   const completedTasks =
     tasks.filter((task) => task.completed).length
 
@@ -140,9 +149,9 @@ function Dashboard() {
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
 
       {/* GLOW EFFECTS */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full blur-[140px] opacity-20"></div>
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[150px]"></div>
 
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full blur-[140px] opacity-20"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[150px]"></div>
 
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/5 border-b border-white/10 px-8 py-5 flex justify-between items-center">
@@ -192,7 +201,7 @@ function Dashboard() {
           </h2>
 
           <p className="text-gray-400 text-xl mt-6 max-w-2xl">
-            Organize your life with a modern productivity system built for creators and developers.
+            Organize your work with a premium productivity dashboard.
           </p>
 
         </div>
@@ -200,7 +209,7 @@ function Dashboard() {
         {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
 
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 transition duration-300">
+          <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
 
             <p className="text-gray-400">
               Total Tasks
@@ -212,7 +221,7 @@ function Dashboard() {
 
           </div>
 
-          <div className="bg-green-500/10 border border-green-500/20 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 transition duration-300">
+          <div className="bg-green-500/10 border border-green-500/20 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
 
             <p className="text-green-300">
               Completed
@@ -224,7 +233,7 @@ function Dashboard() {
 
           </div>
 
-          <div className="bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 transition duration-300">
+          <div className="bg-purple-500/10 border border-purple-500/20 backdrop-blur-xl p-8 rounded-[35px] hover:scale-105 transition duration-300">
 
             <p className="text-purple-300">
               Progress
@@ -238,8 +247,8 @@ function Dashboard() {
 
         </div>
 
-        {/* PROGRESS BAR */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-3xl mb-12">
+        {/* PROGRESS */}
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[35px] mb-12">
 
           <div className="flex justify-between mb-4">
 
@@ -265,7 +274,7 @@ function Dashboard() {
         </div>
 
         {/* ADD TASK */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-3xl mb-12">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[35px] mb-12">
 
           <h3 className="text-3xl font-bold mb-8">
             Create New Task ✨
@@ -310,7 +319,7 @@ function Dashboard() {
         </div>
 
         {/* SEARCH */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-3xl mb-12">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[35px] mb-12">
 
           <div className="flex flex-col lg:flex-row gap-5">
 
@@ -336,7 +345,7 @@ function Dashboard() {
 
         </div>
 
-        {/* EMPTY STATE */}
+        {/* EMPTY */}
         {filteredTasks.length === 0 && (
 
           <div className="text-center py-20">
@@ -346,7 +355,7 @@ function Dashboard() {
             </h3>
 
             <p className="text-gray-500 mt-4 text-lg">
-              Add some tasks and start your productivity journey.
+              Add tasks and begin your productivity journey.
             </p>
 
           </div>
@@ -360,63 +369,101 @@ function Dashboard() {
 
             <div
               key={task.id}
-              className="bg-white/5 border border-white/10 backdrop-blur-xl p-7 rounded-3xl hover:-translate-y-2 hover:border-blue-500/30 transition duration-300 shadow-xl"
+              className="group relative overflow-hidden bg-white/5 border border-white/10 backdrop-blur-2xl p-8 rounded-[35px] hover:-translate-y-3 hover:border-blue-500/40 transition-all duration-500 shadow-2xl"
             >
 
-              {/* TITLE */}
-              {editTaskId === task.id ? (
+              {/* HOVER GLOW */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
 
-                <input
-                  type="text"
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                  className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl"
-                />
+              {/* TOP */}
+              <div className="flex items-center justify-between relative z-10">
 
-              ) : (
-
-                <h3
-                  className={`text-3xl font-bold leading-snug ${
+                <div
+                  className={`w-4 h-4 rounded-full ${
                     task.completed
-                      ? "line-through text-gray-500"
-                      : "text-white"
+                      ? "bg-green-500 shadow-lg shadow-green-500/50"
+                      : "bg-yellow-400 shadow-lg shadow-yellow-400/50"
                   }`}
-                >
-                  {task.title}
-                </h3>
+                ></div>
 
-              )}
-
-              {/* PRIORITY */}
-              <div className="mt-6">
-
-                <span
-                  className={`px-5 py-2 rounded-full text-sm font-bold ${
-                    task.priority === "High"
-                      ? "bg-red-500"
-                      : task.priority === "Medium"
-                      ? "bg-yellow-400 text-black"
-                      : "bg-green-500"
-                  }`}
-                >
-                  {task.priority} Priority
+                <span className="text-gray-500 text-sm font-medium">
+                  #{task.id}
                 </span>
 
               </div>
 
-              {/* DATE */}
-              <p className="text-gray-400 mt-5 text-lg">
-                📅 {task.dueDate || "No due date"}
-              </p>
+              {/* TITLE */}
+              <div className="mt-6 relative z-10">
+
+                {editTaskId === task.id ? (
+
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl text-2xl font-bold outline-none"
+                  />
+
+                ) : (
+
+                  <h3
+                    className={`text-4xl font-black leading-tight transition ${
+                      task.completed
+                        ? "line-through text-gray-500"
+                        : "text-white"
+                    }`}
+                  >
+                    {task.title}
+                  </h3>
+
+                )}
+
+              </div>
+
+              {/* DETAILS */}
+              <div className="mt-8 flex flex-col gap-5 relative z-10">
+
+                {/* PRIORITY */}
+                <div>
+
+                  <span
+                    className={`px-5 py-3 rounded-full text-sm font-bold tracking-wide ${
+                      task.priority === "High"
+                        ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                        : task.priority === "Medium"
+                        ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
+                        : "bg-green-500/20 text-green-300 border border-green-500/30"
+                    }`}
+                  >
+                    ⚡ {task.priority} Priority
+                  </span>
+
+                </div>
+
+                {/* DATE */}
+                <div className="flex items-center gap-3 text-gray-400 text-lg">
+
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+                    📅
+                  </div>
+
+                  <span>
+                    {task.dueDate || "No due date"}
+                  </span>
+
+                </div>
+
+              </div>
 
               {/* BUTTONS */}
-              <div className="flex flex-wrap gap-3 mt-8">
+              <div className="flex flex-wrap gap-4 mt-10 relative z-10">
 
+                {/* EDIT */}
                 {editTaskId === task.id ? (
 
                   <button
                     onClick={() => saveEdit(task.id)}
-                    className="bg-blue-500 hover:bg-blue-600 px-5 py-3 rounded-2xl font-semibold transition"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl shadow-blue-500/20"
                   >
                     Save
                   </button>
@@ -425,27 +472,29 @@ function Dashboard() {
 
                   <button
                     onClick={() => startEdit(task)}
-                    className="bg-purple-500 hover:bg-purple-600 px-5 py-3 rounded-2xl font-semibold transition"
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl shadow-purple-500/20"
                   >
                     Edit
                   </button>
 
                 )}
 
+                {/* COMPLETE */}
                 <button
                   onClick={() => toggleTask(task.id)}
-                  className={`px-5 py-3 rounded-2xl font-semibold transition ${
+                  className={`flex-1 py-4 rounded-2xl font-bold hover:scale-105 transition duration-300 shadow-xl ${
                     task.completed
-                      ? "bg-yellow-400 text-black"
-                      : "bg-green-500"
+                      ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-black shadow-yellow-500/20"
+                      : "bg-gradient-to-r from-green-500 to-emerald-500 shadow-green-500/20"
                   }`}
                 >
                   {task.completed ? "Undo" : "Complete"}
                 </button>
 
+                {/* DELETE */}
                 <button
                   onClick={() => deleteTask(task.id)}
-                  className="bg-red-500 hover:bg-red-600 px-5 py-3 rounded-2xl font-semibold transition"
+                  className="w-full bg-gradient-to-r from-red-500 to-pink-500 py-4 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-xl shadow-red-500/20"
                 >
                   Delete
                 </button>
