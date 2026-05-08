@@ -73,6 +73,7 @@ function Dashboard() {
       priority,
       dueDate,
       report: "",
+      locked: false,
     }
 
     setTasks([...tasks, newTask])
@@ -101,6 +102,14 @@ function Dashboard() {
   // COMPLETE TASK WITH REPORT
   const completeTaskWithReport = () => {
 
+    if (workReport.trim() === "") return
+
+    const confirmed = window.confirm(
+      "Once the work report is submitted, it cannot be changed again."
+    )
+
+    if (!confirmed) return
+
     setTasks(
       tasks.map((task) =>
         task.id === selectedTaskId
@@ -108,6 +117,7 @@ function Dashboard() {
               ...task,
               completed: true,
               report: workReport,
+              locked: true,
             }
           : task
       )
@@ -120,24 +130,10 @@ function Dashboard() {
     setWorkReport("")
   }
 
-  // UNDO TASK
-  const undoTask = (id) => {
-
-    setTasks(
-      tasks.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              completed: false,
-              report: "",
-            }
-          : task
-      )
-    )
-  }
-
   // EDIT
   const startEdit = (task) => {
+
+    if (task.locked) return
 
     setEditTaskId(task.id)
 
@@ -224,12 +220,12 @@ function Dashboard() {
           <div className="w-full max-w-xl bg-[#111827] border border-white/10 rounded-[35px] p-8 shadow-2xl">
 
             <h2 className="text-4xl font-black mb-6 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
-              Work Completion Report
+              Submit Work Report
             </h2>
 
-            <p className="text-gray-400 mb-6">
-              Describe the work completed for this task.
-            </p>
+            <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 p-5 rounded-2xl mb-6">
+              ⚠️ Once submitted, the work report cannot be edited or changed.
+            </div>
 
             <textarea
               rows="6"
@@ -237,7 +233,7 @@ function Dashboard() {
               onChange={(e) =>
                 setWorkReport(e.target.value)
               }
-              placeholder="Write completed work details..."
+              placeholder="Describe the completed work..."
               className="w-full bg-black/30 border border-white/10 rounded-2xl p-5 outline-none resize-none"
             ></textarea>
 
@@ -247,7 +243,7 @@ function Dashboard() {
                 onClick={completeTaskWithReport}
                 className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 py-4 rounded-2xl font-bold hover:scale-105 transition"
               >
-                Submit Report ✅
+                Final Submit ✅
               </button>
 
               <button
@@ -297,7 +293,7 @@ function Dashboard() {
               navigate("/")
 
             }}
-            className="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 rounded-2xl font-semibold hover:scale-105 transition duration-300 shadow-lg shadow-red-500/30"
+            className="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 rounded-2xl font-semibold"
           >
             Logout
           </button>
@@ -320,10 +316,6 @@ function Dashboard() {
               </span>
 
             </h2>
-
-            <p className="text-gray-300 text-xl mt-6 max-w-2xl">
-              Organize your work with a premium productivity dashboard.
-            </p>
 
           </div>
 
@@ -368,32 +360,6 @@ function Dashboard() {
 
           </div>
 
-          {/* PROGRESS */}
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[35px] mb-12">
-
-            <div className="flex justify-between mb-4">
-
-              <h3 className="text-xl font-bold">
-                Productivity Progress
-              </h3>
-
-              <span className="text-gray-400">
-                {completedTasks}/{tasks.length} Completed
-              </span>
-
-            </div>
-
-            <div className="w-full bg-gray-800 h-5 rounded-full overflow-hidden">
-
-              <div
-                style={{ width: `${progress}%` }}
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
-              ></div>
-
-            </div>
-
-          </div>
-
           {/* ADD TASK */}
           <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[35px] mb-12">
 
@@ -410,7 +376,7 @@ function Dashboard() {
                 onChange={(e) =>
                   setTaskInput(e.target.value)
                 }
-                className="lg:col-span-2 bg-black/30 border border-white/10 p-5 rounded-2xl outline-none focus:border-blue-500"
+                className="lg:col-span-2 bg-black/30 border border-white/10 p-5 rounded-2xl outline-none"
               />
 
               <select
@@ -447,7 +413,7 @@ function Dashboard() {
 
             <button
               onClick={addTask}
-              className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-500 py-5 rounded-2xl text-xl font-bold hover:scale-[1.02] transition"
+              className="mt-6 w-full bg-gradient-to-r from-blue-500 to-purple-500 py-5 rounded-2xl text-xl font-bold"
             >
               Add Task 🚀
             </button>
@@ -494,19 +460,6 @@ function Dashboard() {
 
           </div>
 
-          {/* EMPTY */}
-          {filteredTasks.length === 0 && (
-
-            <div className="text-center py-20">
-
-              <h3 className="text-4xl font-bold text-gray-300">
-                No Tasks Found 😴
-              </h3>
-
-            </div>
-
-          )}
-
           {/* TASKS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
 
@@ -514,11 +467,8 @@ function Dashboard() {
 
               <div
                 key={task.id}
-                className="group relative overflow-hidden bg-white/5 border border-white/10 backdrop-blur-2xl p-8 rounded-[35px] hover:-translate-y-3 hover:border-blue-500/40 transition-all duration-500 shadow-2xl"
+                className="group relative overflow-hidden bg-white/5 border border-white/10 backdrop-blur-2xl p-8 rounded-[35px] shadow-2xl"
               >
-
-                {/* GLOW */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
 
                 {/* TOP */}
                 <div className="flex items-center justify-between relative z-10">
@@ -554,7 +504,7 @@ function Dashboard() {
                   ) : (
 
                     <h3
-                      className={`text-4xl font-black leading-tight ${
+                      className={`text-4xl font-black ${
                         task.completed
                           ? "line-through text-gray-500"
                           : "text-white"
@@ -585,28 +535,20 @@ function Dashboard() {
                 </div>
 
                 {/* DATE */}
-                <div className="flex items-center gap-3 text-gray-400 text-lg mt-6">
-
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
-                    📅
-                  </div>
-
-                  <span>
-                    {task.dueDate || "No due date"}
-                  </span>
-
+                <div className="mt-6 text-gray-400">
+                  📅 {task.dueDate || "No due date"}
                 </div>
 
                 {/* REPORT */}
                 {task.report && (
 
-                  <div className="mt-6 bg-black/30 border border-white/10 rounded-2xl p-5 relative z-10">
+                  <div className="mt-6 bg-black/30 border border-white/10 rounded-2xl p-5">
 
-                    <h4 className="text-lg font-bold text-blue-400 mb-3">
+                    <h4 className="text-blue-400 font-bold mb-3">
                       Work Report
                     </h4>
 
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-300">
                       {task.report}
                     </p>
 
@@ -614,58 +556,64 @@ function Dashboard() {
 
                 )}
 
+                {/* LOCKED WARNING */}
+                {task.locked && (
+
+                  <div className="mt-6 bg-red-500/10 border border-red-500/20 text-red-300 p-4 rounded-2xl">
+
+                    🔒 This task has been finalized and can no longer be modified.
+
+                  </div>
+
+                )}
+
                 {/* BUTTONS */}
-                <div className="flex flex-wrap gap-4 mt-10 relative z-10">
+                <div className="flex flex-wrap gap-4 mt-10">
 
-                  {editTaskId === task.id ? (
+                  {!task.locked && (
 
-                    <button
-                      onClick={() =>
-                        saveEdit(task.id)
-                      }
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 py-4 rounded-2xl font-bold"
-                    >
-                      Save
-                    </button>
+                    <>
+                      {editTaskId === task.id ? (
 
-                  ) : (
+                        <button
+                          onClick={() =>
+                            saveEdit(task.id)
+                          }
+                          className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 py-4 rounded-2xl font-bold"
+                        >
+                          Save
+                        </button>
 
-                    <button
-                      onClick={() =>
-                        startEdit(task)
-                      }
-                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 py-4 rounded-2xl font-bold"
-                    >
-                      Edit
-                    </button>
+                      ) : (
 
-                  )}
+                        <button
+                          onClick={() =>
+                            startEdit(task)
+                          }
+                          className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 py-4 rounded-2xl font-bold"
+                        >
+                          Edit
+                        </button>
 
-                  {/* COMPLETE */}
-                  {task.completed ? (
+                      )}
 
-                    <button
-                      onClick={() =>
-                        undoTask(task.id)
-                      }
-                      className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-black py-4 rounded-2xl font-bold"
-                    >
-                      Undo
-                    </button>
+                      {!task.completed && (
 
-                  ) : (
+                        <button
+                          onClick={() =>
+                            openReportModal(task.id)
+                          }
+                          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 py-4 rounded-2xl font-bold"
+                        >
+                          Complete
+                        </button>
 
-                    <button
-                      onClick={() =>
-                        openReportModal(task.id)
-                      }
-                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 py-4 rounded-2xl font-bold"
-                    >
-                      Complete
-                    </button>
+                      )}
+                    </>
 
                   )}
 
+                  {/* DELETE */}
                   <button
                     onClick={() =>
                       deleteTask(task.id)
